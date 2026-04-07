@@ -146,7 +146,7 @@ Uint32 cursorTimerCallback(Uint32 interval, void* param)
 void EventThread::cursorTimer()
 {
 	SDL_RemoveTimer(hideCursorTimerID);
-	hideCursorTimerID = SDL_AddTimer(500, cursorTimerCallback, this);
+	// hideCursorTimerID = SDL_AddTimer(500, cursorTimerCallback, this);
 }
 
 void EventThread::process(RGSSThreadData &rtData)
