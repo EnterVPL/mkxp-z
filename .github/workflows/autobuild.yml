@@ -32,6 +32,19 @@ jobs:
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-gcc
 
+      - name: Checkout private steam sdk repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.STEAM_SDK_REPO }}    # owner/repo
+          token: ${{ secrets.STEAM_SDK_TOKEN }}        # PAT stored as secret
+          path: steam_sdk
+      
+      - name: Set steam env for build
+        run: echo "STEAMWORKS_PATH=${{ github.workspace }}/steam_sdk" >> $GITHUB_ENV
+      
+      - name: Set Steam AppID env
+        run: echo "STEAM_APPID=${{ secrets.STEAM_APPID }}" >> $GITHUB_ENV
+      
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -52,7 +65,10 @@ jobs:
         shell: msys2 {0}
         run: |
           source windows/vars.sh
-          meson setup build -Duse_miniffi=true
+          meson setup build \
+            -Duse_miniffi=true
+            -Dsteamworks_path="$STEAMWORKS_PATH" \
+            -Dsteam_appid="$STEAM_APPID"
           cd build
           ninja
           strip ./mkxp-z.exe
