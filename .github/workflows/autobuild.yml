@@ -63,13 +63,13 @@ jobs:
         shell: msys2 {0}
         run: |
           source windows/vars.sh
-          meson setup build \
-            -Duse_miniffi=true \
-            -Dsteamworks_path="$STEAMWORKS_PATH" \
-            -Dsteam_appid="$STEAM_APPID"
+          STEAM_PATH=$(cygpath -u "$STEAMWORKS_PATH")
+          meson setup build -Duse_miniffi=true -Dsteamworks_path="$STEAM_PATH" -Dsteam_appid="$STEAM_APPID"
           cd build
           ninja
           strip ./mkxp-z.exe
+          strip ./steam_mkxp-z.exe
+
 
       - name: Prepare archive
         shell: msys2 {0}
@@ -81,6 +81,8 @@ jobs:
           cp -r ../../windows/build-mingw64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
           cp ../mkxp-z.exe .
+          cp ../steam_mkxp-z.exe .
+          cp $STEAMWORKS_PATH/redistributable_bin/win64/steam_api64.dll .
           cp ../../mkxp.json .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
