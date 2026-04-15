@@ -64,11 +64,13 @@ jobs:
           source windows/vars.sh
           STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           rm -rf build
+          ls -la $STEAM_PATH
           meson setup build \
             -Duse_miniffi=true \
             -Dsteamworks_path="$STEAM_PATH" \
             -Dsteam_appid="$STEAM_APPID" \
             --buildtype=release
+           strip ./mkxp-z.exe
 
       - name: Prepare archive
         shell: msys2 {0}
