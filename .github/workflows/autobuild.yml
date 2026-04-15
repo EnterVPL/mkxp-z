@@ -40,13 +40,23 @@ jobs:
           token: ${{ secrets.STEAM_SDK_TOKEN }}
           path: steam_sdk  # To stworzy folder 'steam_sdk' wewnątrz głównego katalogu
 
-      - name: Check directory structure
+      - name: Check directory structure (Windows)
+        shell: pwsh
         run: |
-          echo "Aktualny katalog: $(pwd)"
-          echo "Struktura drzewiasta:"
-          tree . -d
-          echo "Zawartość redistributable_bin/win64:"
-          ls -R steam_sdk/redistributable_bin/win64 2>/dev/null || echo "Nie znaleziono ścieżki"
+          Write-Host "Aktualny katalog: $(Get-Location)"
+          Write-Host "Struktura katalogów (Tree):"
+          # Wyświetla tylko foldery
+          Get-ChildItem -Directory -Recurse | Select-Object FullName
+
+          Write-Host "`nZawartość redistributable_bin/win64:"
+          $steamPath = "steam_sdk/redistributable_bin/win64"
+          if (Test-Path $steamPath) {
+              Get-ChildItem -Path $steamPath -Recurse
+          } else {
+              Write-Warning "Nie znaleziono ścieżki: $steamPath"
+              # Pokażmy co w ogóle jest w steam_sdk, żeby wiedzieć gdzie zbłądziliśmy
+              Get-ChildItem -Path steam_sdk
+          }
       
       # - name: Checkout repository
       #   uses: actions/checkout@v5
