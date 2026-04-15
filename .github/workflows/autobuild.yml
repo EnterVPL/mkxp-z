@@ -67,7 +67,7 @@ jobs:
         run: |
           source windows/vars.sh
           meson setup build \
-            -Duse_miniffi=true
+            -Duse_miniffi=true \
             -Dsteamworks_path="$STEAMWORKS_PATH" \
             -Dsteam_appid="$STEAM_APPID"
           cd build
