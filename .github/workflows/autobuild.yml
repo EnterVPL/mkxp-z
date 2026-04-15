@@ -74,6 +74,8 @@ jobs:
             -Dsteamworks_path="$STEAM_PATH" \
             -Dsteam_appid="$STEAM_APPID"
      
+           cd build
+           ninja
            strip ./steam_mkxp-z.exe
 
       - name: Prepare archive
