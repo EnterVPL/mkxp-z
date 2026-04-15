@@ -36,13 +36,17 @@ jobs:
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.STEAM_SDK_REPO }}    # owner/repo
-          token: ${{ secrets.STEAM_SDK_TOKEN }}        # PAT stored as secret
-          path: steam_sdk
-       run: |
-         tree . -d
-         ls steam_sdk/redistributable_bin/win64
-         ls steam_sdk/
+          repository: ${{ secrets.STEAM_SDK_REPO }}
+          token: ${{ secrets.STEAM_SDK_TOKEN }}
+          path: steam_sdk  # To stworzy folder 'steam_sdk' wewnątrz głównego katalogu
+
+      - name: Check directory structure
+        run: |
+          echo "Aktualny katalog: $(pwd)"
+          echo "Struktura drzewiasta:"
+          tree . -d
+          echo "Zawartość redistributable_bin/win64:"
+          ls -R steam_sdk/redistributable_bin/win64 2>/dev/null || echo "Nie znaleziono ścieżki"
       
       # - name: Checkout repository
       #   uses: actions/checkout@v5
