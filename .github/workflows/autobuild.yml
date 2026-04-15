@@ -33,13 +33,7 @@ jobs:
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-gcc
 
-      - name: Checkout private steam sdk repo
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ secrets.STEAM_SDK_REPO }}
-          token: ${{ secrets.STEAM_SDK_TOKEN }}
-          path: steam_sdk  # To stworzy folder 'steam_sdk' wewnątrz głównego katalogu
-      
+    
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -49,6 +43,16 @@ jobs:
             windows/build-mingw64
             windows/downloads
           key: win-${{ hashFiles('windows/Makefile') }}
+
+
+      - name: Checkout private steam sdk repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.STEAM_SDK_REPO }}
+          token: ${{ secrets.STEAM_SDK_TOKEN }}
+          path: steam_sdk
+      
+
 
       - name: Build all dependencies
         shell: msys2 {0}
