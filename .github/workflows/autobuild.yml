@@ -68,7 +68,7 @@ jobs:
           source windows/vars.sh
           STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           rm -rf build
-          ls -la $STEAM_PATH
+
           meson setup build \
             -Duse_miniffi=true \
             -Dsteamworks_path="$STEAM_PATH" \
@@ -76,7 +76,7 @@ jobs:
      
            cd build
            ninja
-           strip ./steam_mkxp-z.exe
+           strip ./mkxp-z.exe
 
       - name: Prepare archive
         shell: msys2 {0}
@@ -87,8 +87,9 @@ jobs:
           cp ../../windows/build-mingw64/bin/x64-msvcrt-ruby310.dll .
           cp -r ../../windows/build-mingw64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
+          cp ../mkxp-z.exe .
           cp ../steam_mkxp-z.exe .
-          cp ./steam_sdk/steam_api64.dll .
+          cp ../steam_sdk/steam_api64.dll .
           cp ../../mkxp.json .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
