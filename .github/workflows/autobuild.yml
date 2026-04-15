@@ -72,8 +72,8 @@ jobs:
           meson setup build \
             -Duse_miniffi=true \
             -Dsteamworks_path="$STEAM_PATH" \
-            -Dsteam_appid="$STEAM_APPID" \
-            --buildtype=release
+            -Dsteam_appid="$STEAM_APPID"
+     
            strip ./steam_mkxp-z.exe
 
       - name: Prepare archive
