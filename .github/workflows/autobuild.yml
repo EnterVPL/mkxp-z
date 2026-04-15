@@ -58,7 +58,7 @@ jobs:
 
       - name: Build exe
         env:
-          STEAMWORKS_PATH: "${{ github.workspace }}/steam_sdk"
+          STEAMWORKS_PATH: "${{ github.workspace }}\steam_sdk\"
           STEAM_APPID: "${{ secrets.STEAM_APPID }}"
         shell: msys2 {0}
         run: |
