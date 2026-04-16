@@ -89,7 +89,7 @@ jobs:
           mv ./3.1.0 ./stdlib
           cp ../mkxp-z.exe .
           cp ../steam_mkxp-z.exe .
-          cp $STEAM_PATH/steam_api64.dll .
+          # cp $STEAM_PATH/steam_api64.dll .
           cp ../../mkxp.json .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
