@@ -392,6 +392,9 @@ void EventThread::process(RGSSThreadData &rtData)
                     
                     break;
                 }
+
+				keyStates[event.key.keysym.scancode] = true;
+                break;
                 
             case SDL_KEYUP :
                 
