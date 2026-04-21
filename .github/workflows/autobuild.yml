@@ -15,7 +15,7 @@ jobs:
     name: Windows
     runs-on: windows-latest
     steps:
-      - uses: benjlevesque/short-sha@v2.2
+      - uses: benjlevesque/short-sha@v3.0
         id: short-sha
         with:
           length: 7
@@ -35,9 +35,9 @@ jobs:
 
     
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             windows/build-mingw64
@@ -46,7 +46,7 @@ jobs:
 
 
       - name: Checkout private steam sdk repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ secrets.STEAM_SDK_REPO }}
           token: ${{ secrets.STEAM_SDK_TOKEN }}
@@ -124,7 +124,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
           path: build/artifact
