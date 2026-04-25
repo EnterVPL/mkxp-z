@@ -73,7 +73,7 @@ jobs:
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mkxp-z.linux.ubuntu.22.04.x86_64.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
           path: build/local
