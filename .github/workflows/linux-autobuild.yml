@@ -56,7 +56,7 @@ jobs:
         run: |
           source linux/vars.sh
           meson setup build  \
-            --bindir=. --prefix=$GITHUB_WORKSPACE/build/local
+            --bindir=. --prefix=$GITHUB_WORKSPACE/build/local \
             -Duse_miniffi=true \
             -Dsteamworks_path="$STEAM_PATH" \
             -Dsteam_appid="$STEAM_APPID" \
