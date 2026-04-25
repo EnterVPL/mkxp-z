@@ -42,7 +42,8 @@ jobs:
       - name: Install apt dependencies
         run: |
           sudo apt update
-          sudo apt install git wget build-essential cmake meson autoconf automake libtool pkg-config ruby bison xxd zlib1g-dev libbz2-dev xorg-dev libgl1-mesa-dev libasound2-dev libpulse-dev -y
+          sudo apt install git wget build-essential cmake ninja-build python3-pip autoconf automake libtool pkg-config ruby bison xxd zlib1g-dev libbz2-dev xorg-dev libgl1-mesa-dev libasound2-dev libpulse-dev -y
+          pip3 install meson
 
       - name: Build everything else
         run: |
