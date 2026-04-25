@@ -8,9 +8,9 @@ on:
     paths-ignore: ['*.md', '*.json', '*.png']
 
 env:
-  STEAM_APPID="${{ secrets.STEAM_APPID }}"
-  STEAM_PATH="${{ github.workspace }}/steam_sdk"
-  APPIMG_TOOLKIT="${{ github.workspace }}/linux/appimg_toolkit"
+  STEAM_APPID: "${{ secrets.STEAM_APPID }}"
+  STEAM_PATH: "${{ github.workspace }}/steam_sdk"
+  APPIMG_TOOLKIT: "${{ github.workspace }}/linux/appimg_toolkit"
 
 jobs:
   build-linux-native:
