@@ -1,6 +1,6 @@
 # I have no idea what I'm doing 
 # I have more idea but I don't know what's it going
-name: Automatic Build
+name: Windows autobuild
 
 on:
   push:
@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: ['dev', 'autobuild']
     paths-ignore: ['*.md', '*.json', '*.png']
+
+env:
+  STEAM_APPID="${{ secrets.STEAM_APPID }}"
+  STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
 
 jobs:
   build-windows:
@@ -61,12 +65,9 @@ jobs:
           make
 
       - name: Build exe
-        env:
-          STEAM_APPID: "${{ secrets.STEAM_APPID }}"
         shell: msys2 {0}
         run: |
           source windows/vars.sh
-          STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           rm -rf build
 
           meson setup build \
@@ -81,7 +82,6 @@ jobs:
       - name: Prepare archive
         shell: msys2 {0}
         run: |
-          STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           mkdir build/artifact
           cd build/artifact
           cp /mingw64/bin/zlib1.dll .
