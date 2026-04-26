@@ -11,6 +11,7 @@ env:
   STEAM_APPID: "${{ secrets.STEAM_APPID }}"
   STEAM_PATH: "${{ github.workspace }}/steam_sdk"
   APPIMG_TOOLKIT: "${{ github.workspace }}/linux/appimg_toolkit"
+  GITHUB_WORKSPACE: ${{ github.workspace }}
 
 jobs:
   build-linux-native:
@@ -60,6 +61,7 @@ jobs:
             -Duse_miniffi=true \
             -Dsteamworks_path="$STEAM_PATH" \
             -Dsteam_appid="$STEAM_APPID" \
+            -Dappimage=true \
             -Dappimagekit_path="$APPIMG_TOOLKIT"
           cd build
           ninja
