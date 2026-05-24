@@ -24,3 +24,6 @@ jobs:
           - version: "Steam Release"
             icon: "./assets/icon.png"
             steam_secret_name: "STEAM_APPID"
+
+
+# Todo Linux

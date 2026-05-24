@@ -72,7 +72,7 @@ jobs:
         shell: cmd
         run: |
           taskkill /F /FI "MODULES eq msys-2.0.dll"
-          C:\msys64\usr\bin\dash.exe /usr/bin/rebaseall -p
+          C:\msys64\usr\bin\dash.exe /usr/bin/rebaseall -b 0x400000000
 
       - name: Build all dependencies
         shell: msys2 {0}
