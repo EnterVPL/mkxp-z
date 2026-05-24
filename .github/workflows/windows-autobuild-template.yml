@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-latest
     env:
       LANG: "en_US.UTF-8"
-      steam_id: secrets.STEAM_APPID
+      steam_id:  ${{ secrets.STEAM_APPID }}
 
     steps:
       - uses: benjlevesque/short-sha@v3.0
@@ -68,6 +68,12 @@ jobs:
           token: ${{ secrets.STEAM_SDK_TOKEN || ''}}
           path: steam_sdk
 
+      - name: Rebase MSYS2 DLLs
+        shell: cmd
+        run: |
+          taskkill /F /FI "MODULES eq msys-2.0.dll"
+          C:\msys64\usr\bin\dash.exe /usr/bin/rebaseall -p
+
       - name: Build all dependencies
         shell: msys2 {0}
         run: |
@@ -75,8 +81,6 @@ jobs:
           make
 
       - name: Build exe
-        env:
-          INPUT_STEAM_APPID: env.steam_appid
         shell: msys2 {0}
         run: |
           source windows/vars.sh
@@ -84,10 +88,10 @@ jobs:
           
           MESON_FLAGS="-Duse_miniffi=true"
           
-          if [ -n "$INPUT_STEAM_APPID" ]; then
+          if [ -n "$steam_id" ]; then
             echo "Steam AppID detected. Adding Steamworks support."
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
-            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=$STEAM_PATH -Dsteam_appid=$INPUT_STEAM_APPID"
+            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=$STEAM_PATH -Dsteam_appid=$steam_id"
           else
             echo "No Steam AppID provided. Compiling without Steamworks."
           fi
@@ -112,7 +116,7 @@ jobs:
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
           
-          if [ -n "$INPUT_STEAM_APPID" ]; then
+          if [ -n "$steam_id" ]; then
             echo "Steam AppID detected. Copying Steam libraries..."
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
             cp ../steam_mkxp-z.exe .
