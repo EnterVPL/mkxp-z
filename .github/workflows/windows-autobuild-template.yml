@@ -7,13 +7,12 @@ on:
     secrets:
       STEAM_APPID:
         required: false
+      STEAM_SDK_TOKEN:
+        required: false
     inputs:
       icon_file:
         type: string
         default: "./assets/icon.png"
-      steam_id:
-        type: string
-        default: secrets.STEAM_APPID
 
 jobs:
   build-windows:
@@ -21,6 +20,7 @@ jobs:
     runs-on: windows-latest
     env:
       LANG: "en_US.UTF-8"
+      steam_id: secrets.STEAM_APPID
 
     steps:
       - uses: benjlevesque/short-sha@v3.0
@@ -41,7 +41,7 @@ jobs:
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-gcc
 
-    
+
       - name: Checkout repository
         uses: actions/checkout@v6
 
@@ -56,16 +56,16 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "Start copying ${{ inputs.icon_file }}..."
-          cp -f "${{ inputs.icon_file }}" "./assets/icon.png"
+          cp -f "${{ inputs.icon_file }}" "./assets/icon.png" || true
           cp -f "${{ inputs.icon_file }}" "./windows/icon.ico"
           echo "👍🏻"
 
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v6
-        if: inputs.steam_id != ''
+        if: env.steam_id != ''
         with:
           repository: ${{ secrets.STEAM_SDK_REPO }}
-          token: ${{ secrets.STEAM_SDK_TOKEN }}
+          token: ${{ secrets.STEAM_SDK_TOKEN || ''}}
           path: steam_sdk
 
       - name: Build all dependencies
@@ -76,7 +76,7 @@ jobs:
 
       - name: Build exe
         env:
-          INPUT_STEAM_APPID: "${{ inputs.steam_appid }}"
+          INPUT_STEAM_APPID: env.steam_appid
         shell: msys2 {0}
         run: |
           source windows/vars.sh
