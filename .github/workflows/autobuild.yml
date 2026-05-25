@@ -19,10 +19,9 @@ jobs:
       matrix:
         target:
           - version: "Steam Playtest"
-            icon: "./assets/TESTICON.png"
+            icon: "./icons/TESTICON.png"
             steam_secret_name: "empty"
           - version: "Steam Release"
-            icon: "./assets/icon.png"
             steam_secret_name: "STEAM_APPID"
 
 

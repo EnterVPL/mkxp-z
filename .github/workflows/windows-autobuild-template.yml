@@ -12,7 +12,7 @@ on:
     inputs:
       icon_file:
         type: string
-        default: "./assets/icon.png"
+        default: ""
 
 jobs:
   build-windows:
@@ -40,6 +40,7 @@ jobs:
             mingw-w64-x86_64-meson
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-imagemagick
 
 
       - name: Checkout repository
@@ -54,10 +55,15 @@ jobs:
 
       - name: Copy icon file
         shell: msys2 {0}
+        if: inputs.icon_file != ''
+        # TODO: more icon scales (16, 32, 48, ...)
         run: |
           echo "Start copying ${{ inputs.icon_file }}..."
           cp -f "${{ inputs.icon_file }}" "./assets/icon.png" || true
-          cp -f "${{ inputs.icon_file }}" "./windows/icon.ico"
+          mkdir /tmp
+          echo "Convert to *. ico file"
+          convert ${{ inputs.icon_file }} /tmp/icon.ico
+          cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "👍🏻"
 
       - name: Checkout private steam sdk repo

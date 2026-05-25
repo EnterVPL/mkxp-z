@@ -1,5 +1,7 @@
 name: Linux autobuild template
-#on:
+on:
+  workflow_call:
+    
 #  push:
 #    branches: ['dev', 'autobuild']
 #    paths-ignore: ['*.md', '*.json', '*.png']
