@@ -60,7 +60,7 @@ jobs:
         run: |
           echo "Start copying ${{ inputs.icon_file }}..."
           cp -f "${{ inputs.icon_file }}" "./assets/icon.png" || true
-          mkdir /tmp
+          mkdir -p /tmp
           echo "Convert to *. ico file"
           convert ${{ inputs.icon_file }} /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
