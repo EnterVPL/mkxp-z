@@ -54,7 +54,7 @@ jobs:
           cp -f "$ICON_FILE" "./assets/icon.png" || true
           mkdir -p /tmp
           echo "Convert to *. ico file"
-          convert "$ICON_FILE" /tmp/icon.ico
+          magick convert "$ICON_FILE" /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "DONE"     
 
