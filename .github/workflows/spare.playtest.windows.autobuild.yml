@@ -1,6 +1,6 @@
 # I have no idea what I'm doing 
 # I have more idea but I don't know what's it going
-name: Automatic Build BASE SPARE
+name: Automatic Build PLAYTEST SPARE
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
 
       - name: Prepare files
         env:
-          ICON_FILE: icons/BAASE_ICON.png
+          ICON_FILE: icons/TESTICON.png
         shell: msys2 {0}
         run: |
           echo "Start copying icon $ICON_FILE..."
@@ -56,15 +56,7 @@ jobs:
           echo "Convert to *. ico file"
           convert $ICON_FILE /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
-          echo "DONE"
-
-      - name: Checkout private steam sdk repo
-        uses: actions/checkout@v6
-        with:
-          repository: ${{ secrets.STEAM_SDK_REPO }}
-          token: ${{ secrets.STEAM_SDK_TOKEN }}
-          path: steam_sdk
-      
+          echo "DONE"     
 
 
       - name: Build all dependencies
@@ -74,18 +66,13 @@ jobs:
           make
 
       - name: Build exe
-        env:
-          STEAM_APPID: 1964650
         shell: msys2 {0}
         run: |
           source windows/vars.sh
-          STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           rm -rf build
 
           meson setup build \
-            -Duse_miniffi=true \
-            -Dsteamworks_path="$STEAM_PATH" \
-            -Dsteam_appid="$STEAM_APPID"
+            -Duse_miniffi=true
      
            cd build
            ninja
@@ -94,7 +81,6 @@ jobs:
       - name: Prepare archive
         shell: msys2 {0}
         run: |
-          STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           mkdir build/artifact
           cd build/artifact
           cp /mingw64/bin/zlib1.dll .
@@ -102,8 +88,6 @@ jobs:
           cp -r ../../windows/build-mingw64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
           cp ../mkxp-z.exe .
-          cp ../steam_mkxp-z.exe .
-          cp $STEAM_PATH/steam_api64.dll .
           cp ../../mkxp.json .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
