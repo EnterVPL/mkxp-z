@@ -56,7 +56,7 @@ jobs:
           path: |
             windows/build-mingw64
             windows/downloads
-          key: win-${{ hashFiles('windows/Makefile') }}
+          key: win-${{ inputs.icon_file }}${{ hashFiles('windows/Makefile') }}
 
       - name: Prepare files
         env:
