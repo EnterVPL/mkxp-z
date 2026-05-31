@@ -72,7 +72,8 @@ jobs:
           cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "👍🏻 it was fast. Now, change vieportW offset"
           sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{env.TILEMAP_PATH}}"
-          echo "Now offset is $(grep -oP 'static const int viewpW\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}})"
+          echo "Now offset is"
+          echo grep -oP 'static const int viewpWOffset\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}}"
 
 
       - name: Checkout private steam sdk repo
