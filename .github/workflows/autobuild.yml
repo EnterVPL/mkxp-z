@@ -14,7 +14,6 @@ jobs:
   autobuild:
     uses: EnterVPL/mkxp-z/.github/workflows/windows-autobuild-template.yml@dev
     secrets:
-      STEAM_APPID: ${{ matrix.target.steam_secret_name != 'empty' && secrets[matrix.target.steam_secret_name] || ''}}
       STEAM_SDK_TOKEN: ${{ matrix.target.steam_secret_name != 'empty' && secrets.STEAM_SDK_TOKEN || ''}}
     with:
       icon_file: ${{ matrix.target.icon }}
