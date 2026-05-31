@@ -34,6 +34,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: mingw64
+          update: true
           install: >-
             base-devel
             git
@@ -71,24 +72,18 @@ jobs:
           cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "👍🏻 it was fast. Now, change vieportW offset"
           sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{env.TILEMAP_PATH}}"
-          echo "Now offset is $(grep -oP 'static const int viewpW\s*=\s*\K[0-9]+') "${{env.TILEMAP_PATH}}""
+          echo "Now offset is $(grep -oP 'static const int viewpW\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}})"
 
 
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v6
         env:
-          steam_id: secrets.STEAM_APPID
+          steam_id: ${{secrets.STEAM_APPID}}
         if: env.steam_id != ''
         with:
           repository: ${{ secrets.STEAM_SDK_REPO }}
           token: ${{ secrets.STEAM_SDK_TOKEN || ''}}
           path: ${{ github.workspace }}/steam_sdk
-
-      - name: Rebase MSYS2 DLLs
-        shell: cmd
-        run: |
-          taskkill /F /FI "MODULES eq msys-2.0.dll"
-          C:\msys64\usr\bin\dash.exe /usr/bin/rebaseall -b 0x400000000
 
       - name: Build all dependencies
         shell: msys2 {0}
