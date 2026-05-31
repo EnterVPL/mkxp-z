@@ -14,6 +14,7 @@ jobs:
       STEAM_SDK_TOKEN: ${{ matrix.target.steam_secret_name != 'empty' && secrets.STEAM_SDK_TOKEN || ''}}
     with:
       icon_file: ${{ matrix.target.icon }}
+      steam_appid: ${{ matrix.target.steam_appid }}
     strategy:
       matrix:
         target:
