@@ -66,8 +66,9 @@ static const int atAreaW = autotileW * atFrames;
 
 static const int tsLaneW = tilesetW / 1;
 
+static const int viewpWOffset = 3; // TODO: make editable from workflow
 /* Map viewport size */
-static const int viewpW = 25;
+static const int viewpW = 25 + viewpWOffset;
 static const int viewpH = 17;
 
 static const size_t zlayersMax = viewpH + 5;

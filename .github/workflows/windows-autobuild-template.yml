@@ -13,6 +13,10 @@ on:
       icon_file:
         type: string
         default: ""
+      viewport_w_offset:
+        type: number
+        default: 3
+        
 
 jobs:
   build-windows:
@@ -53,18 +57,22 @@ jobs:
             windows/downloads
           key: win-${{ hashFiles('windows/Makefile') }}
 
-      - name: Copy icon file
+      - name: Prepare files
+        env:
+          REPLACE_OFFSET_COMMAND: "s/static const int viewpWOffset\\s*=\\s*[0-9]\\+/static const int viewpWOffset"
         shell: msys2 {0}
         if: inputs.icon_file != ''
         # TODO: more icon scales (16, 32, 48, ...)
         run: |
-          echo "Start copying ${{ inputs.icon_file }}..."
+          echo "Start copying icon ${{ inputs.icon_file }}..."
           cp -f "${{ inputs.icon_file }}" "./assets/icon.png" || true
           mkdir -p /tmp
           echo "Convert to *. ico file"
           convert ${{ inputs.icon_file }} /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
-          echo "👍🏻"
+          echo "👍🏻 it was fast. Now, change vieportW offset"
+          sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{github.workspace}}/src/display/tilemap.cpp"
+
 
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v6
@@ -94,10 +102,10 @@ jobs:
           
           MESON_FLAGS="-Duse_miniffi=true"
           
-          if [ -n "$steam_id" ]; then
+          if [ -n "${{ env.steam_id }}" ]; then
             echo "Steam AppID detected. Adding Steamworks support."
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
-            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=$STEAM_PATH -Dsteam_appid=$steam_id"
+            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=$STEAM_PATH -Dsteam_appid=${{ env.steam_id }}"
           else
             echo "No Steam AppID provided. Compiling without Steamworks."
           fi
@@ -122,7 +130,7 @@ jobs:
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
           
-          if [ -n "$steam_id" ]; then
+          if [ -n "${{ env.steam_id }}" ]; then
             echo "Steam AppID detected. Copying Steam libraries..."
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
             cp ../steam_mkxp-z.exe .

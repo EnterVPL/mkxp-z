@@ -23,6 +23,7 @@ jobs:
             steam_secret_name: "empty"
           - version: "Steam Release"
             steam_secret_name: "STEAM_APPID"
+            icon: "icons/BAASE_ICON.png"
 
 
 # Todo Linux
