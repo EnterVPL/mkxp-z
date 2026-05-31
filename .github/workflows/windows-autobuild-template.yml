@@ -5,8 +5,6 @@ name: Windows autobuild template
 on:
   workflow_call:
     secrets:
-      STEAM_APPID:
-        required: false
       STEAM_SDK_TOKEN:
         required: false
     inputs:
@@ -16,6 +14,9 @@ on:
       viewport_w_offset:
         type: number
         default: 3
+      steam_appid:
+        type: string
+        default: ""
         
 
 jobs:
@@ -71,15 +72,17 @@ jobs:
           convert ${{ inputs.icon_file }} /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "👍🏻 it was fast. Now, change vieportW offset"
-          sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{env.TILEMAP_PATH}}"
-          echo "Now offset is"
-          echo grep -oP 'static const int viewpWOffset\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}}"
+          echo "DONE"
+
+#          sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{env.TILEMAP_PATH}}"
+#          echo "Now offset is"
+#          echo grep -oP 'static const int viewpWOffset\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}}"
 
 
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v6
         env:
-          steam_id: ${{secrets.STEAM_APPID}}
+          steam_id: ${{inputs.steam_appid}}
         if: env.steam_id != ''
         with:
           repository: ${{ secrets.STEAM_SDK_REPO }}
@@ -102,12 +105,12 @@ jobs:
           
           MESON_FLAGS="-Duse_miniffi=true"
           
-          if [ -n "${{ secrets.STEAM_APPID }}" ]; then
+          if [ -n "${{ inputs.steam_appid }}" ]; then
             echo "Steam AppID detected. Adding Steamworks support."
-            echo "Steam path: ${{secrets.STEAM_APPID}}"
-            echo "Steam ID:"
+            echo "Steam path: ${{env.STEAM_PATH}}"
+            echo "Steam ID: ${{inputs.steam_appid}}"
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
-            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=${{env.STEAM_PATH}} -Dsteam_appid=${{ secrets.STEAM_APPID }}"
+            MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=${{env.STEAM_PATH}} -Dsteam_appid=${{ inputs.steam_appid }}"
           else
             echo "No Steam AppID provided. Compiling without Steamworks."
           fi
@@ -132,7 +135,7 @@ jobs:
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
           
-          if [ -n "${{ secrets.STEAM_APPID }}" ]; then
+          if [ -n "${{ inputs.steam_appid }}" ]; then
             echo "Steam AppID detected. Copying Steam libraries..."
             STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
             cp ../steam_mkxp-z.exe .

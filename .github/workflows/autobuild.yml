@@ -7,6 +7,9 @@ on:
     branches: [ 'dev', 'autobuild' ]
     paths-ignore: [ '*.md', '*.json', '*.png' ]
 
+env:
+  env_var: ${{ vars.STEAM }}
+
 jobs:
   autobuild:
     uses: EnterVPL/mkxp-z/.github/workflows/windows-autobuild-template.yml@dev
@@ -20,9 +23,8 @@ jobs:
         target:
           - version: "Steam Playtest"
             icon: "./icons/TESTICON.png"
-            steam_secret_name: "empty"
           - version: "Steam Release"
-            steam_secret_name: "STEAM_APPID"
+            steam_appid: ${{ vars.STEAM_APPID }}
             icon: "icons/BAASE_ICON.png"
 
 
