@@ -87,7 +87,7 @@ jobs:
         with:
           repository: ${{ secrets.STEAM_SDK_REPO }}
           token: ${{ secrets.STEAM_SDK_TOKEN || ''}}
-          path: ${{ github.workspace }}/steam_sdk
+          path: steam_sdk
 
       - name: Build all dependencies
         shell: msys2 {0}
@@ -109,7 +109,6 @@ jobs:
             echo "Steam AppID detected. Adding Steamworks support."
             echo "Steam path: ${{env.STEAM_PATH}}"
             echo "Steam ID: ${{inputs.steam_appid}}"
-            STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
             MESON_FLAGS="$MESON_FLAGS -Dsteamworks_path=${{env.STEAM_PATH}} -Dsteam_appid=${{ inputs.steam_appid }}"
           else
             echo "No Steam AppID provided. Compiling without Steamworks."
