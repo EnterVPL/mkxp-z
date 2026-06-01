@@ -54,7 +54,7 @@ jobs:
       - name: Prepare hash file
         shell: msys2 {0} 
         run: |
-          mkdir -r /tmp/hashs
+          mkdir -p /tmp/hashs
           echo "${{inputs.buildKey}},${{github.workflow.name}},${{inputs.steam_appid}}" > /tmp/hashs/toHashfile-global.txt     
 
 

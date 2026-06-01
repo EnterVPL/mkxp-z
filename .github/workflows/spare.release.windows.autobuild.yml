@@ -101,7 +101,7 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "Set icon for non-steam exe (steam exe file has icon from build)"
-          rcedit "../mkxp-z.exe" --set-icon "${{env.TEMP_OUTPUT_EXE_ICON_FILE}}"
+          rcedit "mkxp-z.exe" --set-icon "${{env.TEMP_OUTPUT_EXE_ICON_FILE}}"
           echo "Prepare steam path"
           STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           mkdir build/artifact
