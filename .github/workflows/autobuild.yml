@@ -20,9 +20,11 @@ jobs:
         target:
           - version: "Steam Playtest"
             icon: "./icons/TESTICON.png"
+            buildKey: playtest_windows_matrix_autobuild
           - version: "Steam Release"
             steam_appid: "1964650"
             icon: "icons/BAASE_ICON.png"
+            buildKey: base_windows_matrix_autobuild
 
 
 # Todo Linux

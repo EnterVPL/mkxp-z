@@ -10,6 +10,11 @@ on:
     branches: ['dev', 'autobuild']
     paths-ignore: ['*.md', '*.json', '*.png']
 
+env:
+  BUILD_KEY: "win_base_spare"
+  EXE_ICON_FILE: icons/BAASE_ICON.png
+  TEMP_OUTPUT_EXE_ICON_FILE: /tmp/icon.ico
+
 jobs:
   build-windows:
     name: Windows
@@ -34,6 +39,7 @@ jobs:
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-imagemagick
+            mingw-w64-x86_64-rcedit
 
     
       - name: Checkout repository
@@ -47,17 +53,15 @@ jobs:
           key: win-spare-release-${{ hashFiles('windows/Makefile') }}-v2
 
 
-      - name: Prepare files
-        env:
-          ICON_FILE: icons/BAASE_ICON.png
+      - name: Prepare icon files
         shell: msys2 {0}
         run: |
-          echo "Start copying icon $ICON_FILE..."
-          cp -f "$ICON_FILE" "./assets/icon.png" || true
+          echo "Start copying icon ${{env.EXE_ICON_FILE}}..."
+          cp -f "${{env.EXE_ICON_FILE}}" "./assets/icon.png" || true
           mkdir -p /tmp
           echo "Convert to *. ico file"
-          magick convert "$ICON_FILE" /tmp/icon.ico
-          cp -f /tmp/icon.ico "./windows/icon.ico"
+          magick "${{env.EXE_ICON_FILE}}" "${{env.TEMP_OUTPUT_EXE_ICON_FILE}}"
+          cp -f "${{env.TEMP_OUTPUT_EXE_ICON_FILE}}" "./windows/icon.ico"
           echo "DONE"
 
       - name: Checkout private steam sdk repo
@@ -96,8 +100,12 @@ jobs:
       - name: Prepare archive
         shell: msys2 {0}
         run: |
+          echo "Set icon for non-steam exe (steam exe file has icon from build)"
+          rcedit "../mkxp-z.exe" --set-icon "${{env.TEMP_OUTPUT_EXE_ICON_FILE}}"
+          echo "Prepare steam path"
           STEAM_PATH=$(cygpath -u "${{ github.workspace }}/steam_sdk")
           mkdir build/artifact
+          echo "START COPYING FILES"
           cd build/artifact
           cp /mingw64/bin/zlib1.dll .
           cp ../../windows/build-mingw64/bin/x64-msvcrt-ruby310.dll .
@@ -109,6 +117,8 @@ jobs:
           cp ../../mkxp.json .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
+          echo "Files copying success!"
+
 
       - name: Check for DLLs missing from the artifact
         shell: msys2 {0}
@@ -141,5 +151,5 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
+          name: mkxp-z.autobiuld.windows.${{ env.BUILD_KEY }}
           path: build/artifact

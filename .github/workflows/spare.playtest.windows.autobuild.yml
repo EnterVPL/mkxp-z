@@ -10,6 +10,9 @@ on:
     branches: ['dev', 'autobuild']
     paths-ignore: ['*.md', '*.json', '*.png']
 
+env:
+  BUILD_KEY: "win_playtest_spare"
+
 jobs:
   build-windows:
     name: Windows
@@ -56,7 +59,7 @@ jobs:
           cp -f "$ICON_FILE" "./assets/icon.png" || true
           mkdir -p /tmp
           echo "Convert to *. ico file"
-          magick convert "$ICON_FILE" /tmp/icon.ico
+          magick "$ICON_FILE" /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
           echo "DONE"     
 
@@ -125,5 +128,5 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
+          name: mkxp-z.autobiuld.windows.${{ env.BUILD_KEY }}
           path: build/artifact

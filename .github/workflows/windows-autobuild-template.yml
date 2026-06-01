@@ -11,12 +11,11 @@ on:
       icon_file:
         type: string
         default: ""
-      viewport_w_offset:
-        type: number
-        default: 3
       steam_appid:
         type: string
         default: ""
+      buildKey:
+        type: string
         
 
 jobs:
@@ -48,20 +47,31 @@ jobs:
             mingw-w64-x86_64-imagemagick
 
 
+#            mingw-w64-x86_64-rcedit
+## TODO: usue rcedit to change mkxp.exe when steam is included, don't install
+## TODO: don't install  mingw-w64-x86_64-rcedit when steam isn't included
+
+      - name: Prepare hash file
+        shell: msys2 {0} 
+        run: |
+          mkdir -r /tmp/hashs
+          echo "${{inputs.buildKey}},${{github.workflow.name}},${{inputs.steam_appid}}" > /tmp/hashs/toHashfile-global.txt     
+
+
       - name: Checkout repository
         uses: actions/checkout@v6
 
       - uses: actions/cache@v5
+        name: Cache msys2
         with:
           path: |
             windows/build-mingw64
             windows/downloads
-          key: win-${{ inputs.icon_file }}${{ hashFiles('windows/Makefile') }}
+          key: ${{ hashFiles('/tmp/hashs/toHashfile-global.txt') }}
+
+        
 
       - name: Prepare files
-        env:
-          REPLACE_OFFSET_COMMAND: "s/static const int viewpWOffset\\s*=\\s*[0-9]\\+/static const int viewpWOffset"
-          TILEMAP_PATH: ${{github.workspace}}/src/display/tilemap.cpp
         shell: msys2 {0}
         if: inputs.icon_file != ''
         run: |
@@ -69,15 +79,9 @@ jobs:
           cp -f "${{ inputs.icon_file }}" "./assets/icon.png" || true
           mkdir -p /tmp
           echo "Convert to *. ico file"
-          convert ${{ inputs.icon_file }} /tmp/icon.ico
+          magick ${{ inputs.icon_file }} /tmp/icon.ico
           cp -f /tmp/icon.ico "./windows/icon.ico"
-          echo "👍🏻 it was fast. Now, change vieportW offset"
           echo "DONE"
-
-#          sed -i "${{env.REPLACE_OFFSET_COMMAND}} = ${{inputs.viewport_w_offset}}/" "${{env.TILEMAP_PATH}}"
-#          echo "Now offset is"
-#          echo grep -oP 'static const int viewpWOffset\s*=\s*\K[0-9]+' "${{env.TILEMAP_PATH}}"
-
 
       - name: Checkout private steam sdk repo
         uses: actions/checkout@v6
