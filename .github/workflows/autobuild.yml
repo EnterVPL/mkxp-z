@@ -18,6 +18,9 @@ jobs:
     strategy:
       matrix:
         target:
+          - version: "Steam DEMO"
+            icon: "./icons/DEMOICON2.png"
+            buildKey: demo_windows_matrix_autobuild
           - version: "Steam Playtest"
             icon: "./icons/TESTICON.png"
             buildKey: playtest_windows_matrix_autobuild
